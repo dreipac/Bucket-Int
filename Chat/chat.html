@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nachrichtenchats</title>
+  <link rel="stylesheet" href="./chat.css" />
+<script type="module" src="../shared/supabase.js"></script>
+
+</head>
+<body class="chat-layout">
+  <!-- Icon-Leiste (Straton) mit Overlay-Panel -->
+  <nav class="app-rail">
+    <div class="app-rail__panel">
+      <a href="../index.html" class="rail-btn">
+        <img src="../assets/icons/home.png" alt="Home" class="rail-btn__icon-img">
+        <span class="rail-btn__label">Straton</span>
+      </a>
+    </div>
+  </nav>
+
+  <aside class="chat-sidebar">
+
+
+    <header class="chat-sidebar__header">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"
+        class="chat-title-icon lucide-message-circle">
+        <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>
+      </svg>
+
+      <h1>Chats</h1>
+    </header>
+
+
+    <ul id="contactList" class="list"></ul>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-header">
+      <div id="activeChatName" class="chat-title">Kein Chat ausgewählt</div>
+    </div>
+
+    <ul id="messageList" class="messages"></ul>
+
+    <form id="composer" class="composer">
+      <input id="messageInput" type="text" placeholder="Nachricht schreiben…" autocomplete="off" />
+      <button type="submit">Senden</button>
+    </form>
+  </main>
+
+  <script type="module">
+  // Warten bis Supabase bereit ist
+  const wait = () => new Promise(r => {
+    if (window.__SB_READY__) return r();
+    addEventListener("sb-ready", r, { once: true });
+  });
+  await wait();
+
+  // Wenn nicht eingeloggt, übernimmt supabase.js den Redirect automatisch.
+  // Für sauberes Verhalten: erst laden, wenn Session existiert.
+  const { data: { session } } = await window.sb.auth.getSession();
+  if (!session?.user) {
+    // nichts tun – supabase.js leitet zu /login/login.html?next=... um
+  } else {
+    // jetzt erst die eigentliche Chat-App laden
+    const s = document.createElement("script");
+    s.type = "module";
+    s.src = "./chat.js";
+    document.body.appendChild(s);
+  }
+</script>
+
+</body>
+</html>

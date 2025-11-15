@@ -1,0 +1,387 @@
+/* ---------------------------------------
+   Chat App – Neue UI (Glass / Neo Dark)
+   -> drop-in replacement für deine chat.css
+   -> kein HTML/JS-Update nötig
+----------------------------------------*/
+
+/* Optional: bessere Schrift (system fallback bleibt) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root{
+  /* Basistöne */
+  --bg-0:#060a12;
+  --bg-1:#0b1220;
+  --bg-2:#0f1930;
+  --panel:rgba(255,255,255,.05);
+  --panel-strong:rgba(255,255,255,.08);
+
+  /* Akzente */
+  --accent:#7aa2ff;
+  --accent-2:#9f7aff;
+  --ring:#30405f;
+
+  /* Text */
+  --text:#e8eeff;
+  --muted:#a9b6d6;
+
+  /* Effekte */
+  --shadow-1: 0 8px 24px rgba(0,0,0,.35);
+  --shadow-2: 0 2px 8px rgba(0,0,0,.35);
+  --blur: 12px;
+
+  /* Bubble Farben */
+  --me-bg: linear-gradient(180deg, #102a5a, #0f2350);
+  --them-bg: linear-gradient(180deg, #0c203f, #0a1933);
+  --me-border: #244a8a;
+  --them-border: #1b345f;
+
+  /* Breiten für die Icon-Leiste links */
+  --rail-collapsed: 64px;
+  --rail-expanded: 220px;
+}
+
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 800px at 10% -10%, #14203a 0%, transparent 50%),
+    radial-gradient(1000px 700px at 120% 10%, #1c2b51 0%, transparent 45%),
+    var(--bg-0);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+/* ---------- Layout ---------- */
+
+.chat-layout{
+  display:grid;
+  grid-template-columns: var(--rail-collapsed) 320px 1fr;
+  min-height:100vh;
+}
+
+/* ---------- Linke Icon-Leiste (Straton Rail) als Drawer ---------- */
+
+/* Zelle im Grid – schmale feste Spalte links */
+.app-rail{
+  position:relative;
+  overflow:visible; /* wichtig, damit das Panel über den Rand ragen darf */
+}
+
+/* Das eigentliche Panel, das herausfährt */
+.app-rail__panel{
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  width:var(--rail-collapsed);          /* schmal (passt in die Spalte) */
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.0));
+  border-right:1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(var(--blur));
+  padding:4rem .4rem;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:.5rem;
+  box-shadow: var(--shadow-2);
+  z-index:100;                          /* über Sidebar/Chat */
+  transition: width .22s ease;
+}
+
+/* Beim Hover fährt das Panel über Sidebar/Chat hinaus */
+.app-rail:hover .app-rail__panel{
+  width:var(--rail-expanded);
+}
+
+
+/* Beim Hover fährt der Drawer auf, ohne das Grid zu beeinflussen */
+.app-rail:hover{
+  width:var(--rail-expanded);
+}
+
+
+/* Button in der Rail */
+.rail-btn{
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+  padding:.25rem;                 /* klein – wirkt wie nur Icon */
+  border-radius:999px;            /* rund um das Icon */
+  text-decoration:none;
+  border:1px solid transparent;
+  background:transparent;         /* kein Button-Look */
+  color:var(--text);
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  overflow:hidden;
+  transition:
+    background .18s ease,
+    border .18s ease,
+    box-shadow .18s ease,
+    padding .18s ease;
+}
+/* Wenn über dem Icon/Link: Button-Form */
+.app-rail:hover .rail-btn:hover{
+  padding:.45rem .7rem;
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(122,162,255,.25);
+}
+
+
+.rail-btn__icon{
+  font-size:1.1rem;
+}
+
+/* PNG Icon */
+.rail-btn__icon-img{
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: .95;
+}
+
+
+/* Text zunächst “eingeklappt” */
+.rail-btn__label{
+  max-width:0;
+  opacity:0;
+  transition: max-width .22s ease, opacity .18s ease;
+}
+
+/* Wenn die Rail aufgeklappt ist, Text immer anzeigen */
+.app-rail:hover .rail-btn__label{
+  max-width:120px;
+  opacity:1;
+}
+
+
+
+@media (max-width: 960px){
+  .chat-layout{
+    grid-template-columns: 1fr;
+  }
+  .app-rail{
+    display:none;
+  }
+  .chat-sidebar{ order:2 }
+  .chat-main{ order:1 }
+}
+
+
+
+/* ---------- Sidebar ---------- */
+
+.chat-sidebar{
+  border-right:1px solid rgba(255,255,255,.06);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.0));
+  backdrop-filter: blur(var(--blur));
+  padding:1rem;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+
+.chat-sidebar__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-title-icon {
+  opacity: 0.85;
+  width: 30px;
+  height: 30px;
+}
+
+
+.chat-sidebar__header{
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+  padding:.75rem .25rem 1rem;
+}
+
+.chat-sidebar__header h1{
+  font-size:1.25rem; margin:0; font-weight:700; letter-spacing:.2px;
+}
+.back-link{
+  color:var(--muted); text-decoration:none; font-weight:600;
+  padding:.25rem .5rem; border-radius:8px; border:1px solid transparent;
+}
+.back-link:hover{ border-color:rgba(255,255,255,.12); background:rgba(255,255,255,.04) }
+
+/* Panels */
+.pending,.contacts{
+  background: var(--panel);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:.9rem;
+  box-shadow: var(--shadow-2);
+}
+.pending h2,.contacts h2{
+  margin:.1rem 0 .5rem; font-size:.95rem; letter-spacing:.3px; color:#d3dcff;
+}
+
+/* Listen */
+.list{
+  list-style:none; margin:.5rem 0 0; padding:0;
+  display:flex; flex-direction:column; gap:.45rem;
+}
+.list li{
+  display:flex; align-items:center; justify-content:space-between; gap:.6rem;
+  padding:.55rem .65rem;
+  border-radius:12px;
+  cursor:pointer;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.07);
+  transition: transform .08s ease, background .2s ease, border .2s ease;
+}
+.list li:hover{
+  transform: translateY(-1px);
+  background: var(--panel-strong);
+  border-color: rgba(255,255,255,.12);
+}
+.list .row-actions{display:flex; gap:.4rem}
+.list button{
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  color:var(--text);
+  border-radius:10px;
+  padding:.3rem .6rem;
+  cursor:pointer; font-weight:600;
+}
+.list button:hover{ border-color: var(--accent); box-shadow: 0 0 0 2px rgba(122,162,255,.15) inset }
+
+/* ---------- Main: Chat ---------- */
+
+.chat-main{
+  display:grid; grid-template-rows:auto 1fr auto; min-height:100vh;
+  backdrop-filter: blur(calc(var(--blur) * .6));
+}
+
+/* Header */
+.chat-header{
+  position:sticky; top:0; z-index:3;
+  padding:1rem 1.25rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background: linear-gradient(180deg, rgba(12,18,32,.9), rgba(12,18,32,.6));
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.chat-title{
+  font-weight:700; letter-spacing:.2px;
+  font-size:1.05rem;
+  opacity:.95;
+}
+
+/* Nachrichtenliste */
+.messages{
+  list-style:none; margin:0; padding:1.2rem 1.2rem 2rem;
+  display:flex; flex-direction:column; gap:.6rem;
+  overflow:auto;
+  scroll-behavior:smooth;
+}
+
+/* Leerer Zustand */
+.messages:empty::before{
+  content:"Wähle links einen Kontakt, um zu starten";
+  color:var(--muted);
+  display:block; text-align:center; margin-top:18vh;
+  font-size:.98rem;
+  opacity:.8;
+}
+
+/* Scrollbar Styling (WebKit + Firefox) */
+.messages::-webkit-scrollbar{ width: 10px }
+.messages::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.10));
+  border-radius: 999px;
+}
+.messages{ scrollbar-color: rgba(255,255,255,.22) transparent; scrollbar-width: thin }
+
+/* Nachrichtenblasen */
+.msg{
+  max-width: min(72%, 720px);
+  padding:.6rem .8rem .5rem;
+  border-radius:14px;
+  position:relative;
+  box-shadow: var(--shadow-1);
+  animation: msgIn .18s ease;
+  line-height:1.45;
+  border:1px solid transparent;
+}
+
+@keyframes msgIn{
+  from{ transform: translateY(4px); opacity:.0 }
+  to{ transform: translateY(0); opacity:1 }
+}
+
+/* Eigene Nachricht */
+.me{
+  align-self:flex-end;
+  background: var(--me-bg);
+  border-color: var(--me-border);
+  /* Bubble Tail */
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 10px), calc(100% - 10px) 100%, calc(100% - 24px) calc(100% - 2px), 0 calc(100% - 2px));
+}
+
+/* Empfangene Nachricht */
+.them{
+  align-self:flex-start;
+  background: var(--them-bg);
+  border-color: var(--them-border);
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 2px), 24px calc(100% - 2px), 10px 100%, 0 calc(100% - 10px));
+}
+
+/* Inhalt + Meta */
+.msg > div:first-child{ white-space:pre-wrap; word-wrap:break-word }
+.meta{
+  font-size:.75rem; color:var(--muted); margin-top:.25rem;
+  opacity:.85;
+}
+
+/* Composer */
+.composer{
+  display:flex; gap:.6rem; padding:1rem 1.25rem;
+  border-top:1px solid rgba(255,255,255,.06);
+  background: linear-gradient(0deg, rgba(9,14,26,.92), rgba(9,14,26,.65));
+}
+
+.composer input{
+  flex:1;
+  padding:.8rem 1rem;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  color:var(--text);
+  outline:none;
+  transition: border .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.composer input::placeholder{ color:#90a2c8 }
+.composer input:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(122,162,255,.18);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+}
+
+.composer button{
+  padding:.85rem 1.1rem;
+  border-radius:14px;
+  border:1px solid rgba(122,162,255,.45);
+  background: linear-gradient(180deg, rgba(122,162,255,.25), rgba(122,162,255,.15));
+  color:#f3f6ff; font-weight:700; letter-spacing:.2px;
+  cursor:pointer;
+  transition: transform .06s ease, box-shadow .18s ease, filter .18s ease;
+  box-shadow: 0 6px 18px rgba(122,162,255,.25), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.composer button:hover{
+  filter: brightness(1.05);
+  box-shadow: 0 8px 24px rgba(122,162,255,.35);
+}
+.composer button:active{ transform: translateY(1px) }
+
+/* Kleinere Verbesserungen */
+a, button{ -webkit-tap-highlight-color: transparent }
