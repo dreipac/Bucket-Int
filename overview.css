@@ -1,0 +1,525 @@
+/* ----- Grundlayout: noch dunkleres Dark Theme ----- */
+:root{
+  --bg-0: #070b13;      /* sehr dunkel */
+  --bg-1: #0b1320;      /* Cards/Sidebar */
+  --bg-2: #0f1a2e;      /* Hover */
+  --text: #e6ecff;
+  --muted: #9fb0d0;
+  --acc-1: #7c4dff;
+  --acc-2: #22b0ff;
+  --ring: #2a3f66;
+  --shadow: rgba(0,0,0,0.45);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: var(--text);
+
+  /* 🔹 Hintergrundbild statt Verlauf */
+  background: url("./assets/background/overviewBackground.png") center center / cover no-repeat fixed;
+  background-color: #05070b; /* Fallback, falls Bild nicht lädt */
+}
+/* globaler Dark-Blur über dem Bild */
+.main::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 12, 0.35);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  backdrop-filter: blur(30px) saturate(140%);
+  z-index: -1;
+}
+
+/* Dunkler Blur-Schleier über der gesamten Seite (außer Sidebar) */
+.layout::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 12, 0.55); /* stärker abgedunkelt */
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
+  backdrop-filter: blur(30px) saturate(140%);
+  z-index: -1;
+}
+
+
+
+
+
+/* ----- Layout (Sidebar links) ----- */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 84px 1fr;
+  }
+}
+
+/* ----- Sidebar ----- */
+.sidebar{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: linear-gradient(180deg, var(--bg-1), #0a1120);
+  border-right: 1px solid var(--ring);
+  padding: 1rem;
+}
+
+.sidebar__brand{
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .5rem .25rem;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+.brand-dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--acc-1), var(--acc-2));
+  box-shadow: 0 0 0 3px rgba(124,77,255,0.15);
+}
+
+.brand-name{
+  font-size: 1rem;
+  opacity: .9;
+}
+
+.sidebar__nav{
+  margin-top: .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.btn-logout{
+  width: 100%;
+  appearance: none;
+  border: 1px solid var(--ring);
+  background: transparent;
+  color: var(--text);
+  border-radius: 12px;
+  padding: .7rem .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease, border-color .2s ease;
+}
+.btn-logout:hover{
+  background: var(--bg-2);
+  border-color: #365281;
+  transform: translateY(-1px);
+}
+.btn-logout:active{ transform: translateY(0); }
+
+/* ----- Main ----- */
+.main{
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  padding: 2rem clamp(1rem, 3vw, 3rem);
+}
+
+/* Großes Logo oben */
+.hero{
+  display: grid;
+  place-items: center;
+  padding: 2rem 0 1rem;
+}
+.hero__logo{
+  width: min(450px, 60vw);
+  height: auto;
+  filter: drop-shadow(0 12px 24px var(--shadow));
+  opacity: .95;
+}
+
+/* App-Kachel-Grid: zentriert in der Mitte */
+.app-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.app-grid.single{
+  grid-template-columns: min(260px, 90vw);
+}
+
+.app-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 1.2rem 1.4rem;
+  text-align: center;
+  backdrop-filter: blur(10px) saturate(120%);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  color: var(--text);
+  width: 250px;
+}
+.app-card.small{
+  padding: .9rem 1rem;
+}
+/* Hover-Effekt: gleich wie Sidebar */
+.app-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(122,162,255,.45);
+  background: linear-gradient(180deg, rgba(122,162,255,.16), rgba(122,162,255,.06));
+  box-shadow: 0 10px 24px rgba(122,162,255,.18);
+}
+
+.app-card img{
+  width: 48px;
+  height: 48px;
+  margin-bottom: .6rem;
+  opacity: .95;
+}
+
+.app-card h2{
+  margin: .2rem 0 .25rem;
+  font-size: 1rem;
+  letter-spacing: .2px;
+}
+
+.app-card p{
+  margin: 0 0 .6rem;
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+.app-card .btn {
+  background: linear-gradient(180deg, var(--acc-1), var(--acc-2));
+  box-shadow: 0 6px 18px rgba(34,176,255,.4);
+  transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease;
+}
+.app-card .btn:hover {
+  opacity: .92;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px rgba(122,162,255,.5);
+}
+
+
+/* Buttons */
+.btn{
+  display: inline-block;
+  margin-top: .4rem;
+  padding: .5rem 1.1rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--acc-1), var(--acc-2));
+  color: #fff;
+  font-weight: 700;
+  font-size: .9rem;
+  text-decoration: none;
+  border: 0;
+  box-shadow: 0 10px 20px -10px rgba(34,176,255,.5);
+  transition: transform .15s ease, opacity .15s ease;
+}
+.btn:hover{ opacity: .92; transform: translateY(-1px); }
+.btn:active{ transform: translateY(0); }
+
+/* Kleiner Hinweis unten im Main */
+.dev-credit {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  opacity: 0.7;
+  margin-top: 3rem;
+  padding-bottom: 1rem;
+}
+
+/* ===== Modal: Kontaktanfragen ===== */
+.modal{
+  position: fixed; inset: 0;
+  display: none; place-items: center;
+  z-index: 1000;
+}
+.modal.open{ display: grid; }
+
+.modal__backdrop{
+  position: absolute; inset: 0;
+  background: rgba(0,0,20,.55);
+  backdrop-filter: blur(3px);
+}
+
+.modal__card{
+  position: relative;
+  width: min(720px, 92vw);
+  max-height: 80vh;
+  overflow: auto;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--ring);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px -10px var(--shadow);
+  padding: 1rem;
+}
+
+.modal__header{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .25rem .25rem .75rem;
+  border-bottom: 1px solid var(--ring);
+  margin: 0 0 .75rem;
+}
+.modal__close{
+  appearance: none; border: 1px solid var(--ring); background: transparent; color: var(--text);
+  border-radius: 10px; padding: .25rem .6rem; cursor: pointer;
+}
+
+.modal__list{
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: .5rem;
+}
+.modal__list li{
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  border: 1px solid var(--ring); border-radius: 12px; padding: .6rem .75rem;
+  background: var(--bg-1);
+}
+.modal__list li .meta{ color: var(--muted); font-size: .8rem; margin-top: .2rem; }
+
+.modal__list .row-actions{ display: flex; gap: .4rem; }
+.modal__list .row-actions button{
+  border: 1px solid var(--ring); background: transparent; color: var(--text);
+  border-radius: 8px; padding: .35rem .6rem; cursor: pointer;
+}
+
+.modal__footer{
+  display: flex; justify-content: flex-end; gap: .5rem;
+  border-top: 1px solid var(--ring);
+  padding-top: .75rem; margin-top: 1rem;
+}
+
+.modal__list .empty{
+  justify-content: center; color: var(--muted); font-style: italic;
+}
+
+/* ====== Glass Sidebar (wie Screenshot) ====== */
+/* Container: keine eigene Farbe, keine Rundung */
+.sidebar.glass-nav{
+  padding: 0;
+  background: transparent;
+  border-right: 0;
+}
+
+/* KANTIG + echter Glas-Blur ohne Farbverlauf */
+.nav-card{
+  position: sticky;
+  top: 0;
+  height: 100vh;
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: .9rem;
+  padding: .9rem;
+
+  border-radius: 0;
+  /* leicht dunkler Glas-Blur */
+  background: rgba(8, 10, 18, 0.25);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  backdrop-filter: blur(18px) saturate(120%);
+  border-right: 1px solid rgba(255,255,255,.06);
+  box-shadow: none; /* kein Schatten */
+}
+
+
+
+/* Suche */
+.nav-search{
+  display: grid; grid-template-columns: 20px 1fr; align-items: center; gap: .5rem;
+  padding: .5rem .6rem;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 12px;
+  background: rgba(255,255,255,.05);
+}
+.nav-search .ico{ width: 18px; height: 18px; opacity: .9 }
+.nav-search input{
+  appearance: none; border: 0; outline: 0; background: transparent; color: var(--text);
+  font-size: .95rem;
+}
+.nav-search input::placeholder{ color: var(--muted) }
+
+/* Gruppen */
+.nav-groups{ display: flex; flex-direction: column; gap: .9rem; overflow: auto; }
+.nav-group{ display: flex; flex-direction: column; gap: .35rem; }
+.nav-label{
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); opacity: .8; padding: .1rem .2rem .2rem .2rem;
+}
+
+/* Navigationseinträge: clean, erst bei Hover sichtbar */
+.nav-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: .55rem;
+
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: .95rem;
+
+  padding: .45rem .55rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+
+  transition: background .18s ease, border-color .18s ease, transform .15s ease;
+  cursor: pointer;
+}
+
+/* Hover-Effekt: sanfter Glas-Glow */
+.nav-item:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.10);
+  transform: translateY(-1px);
+}
+
+/* Aktiver Menüpunkt */
+.nav-item[aria-current="page"] {
+  background: rgba(122,162,255,0.18);
+  border-color: rgba(122,162,255,0.35);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  font-weight: 600;
+}
+
+
+.nav-icon{ width: 22px; height: 22px; display: grid; place-items: center; opacity: .95 }
+.nav-icon svg{ width: 20px; height: 20px }
+.nav-text{ font-weight: 600; letter-spacing: .2px; font-size: .92rem }
+
+.nav-action {
+  all: unset;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: .55rem;
+  padding: .45rem .55rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, transform .15s ease;
+}
+.nav-action:hover {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  transform: translateY(-1px);
+}
+
+
+/* ======= Sidebar Footer (Profilbereich – angepasst ans Gesamtbild) ======= */
+.nav-footer.dark-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+
+  /* gleicht das Padding der .nav-card aus */
+  margin-left: -1.2rem;
+  margin-right: -1.2rem;
+  margin-bottom: -1.2rem;
+  padding: 1rem 1.4rem;
+
+  width: calc(100% + 2.4rem); /* kompensiert den negativen Margin */
+  background: rgba(12, 16, 28, 0.45);
+  border-top: 1px solid rgba(255,255,255,.05);
+  border-radius: 0;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.05);
+  opacity: .95;
+}
+
+.profile-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--text);
+}
+
+.profile-id {
+  font-size: .78rem;
+  color: var(--muted);
+  opacity: .9;
+}
+
+.logout-ico {
+  appearance: none;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.18);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease;
+}
+.logout-ico:hover {
+  border-color: rgba(122,162,255,.55);
+  background: rgba(255,255,255,.08);
+}
+
+.nav-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+.nav-item:hover .nav-icon img,
+.nav-action:hover .nav-icon img {
+  opacity: 1;
+}
+
+/* ---------- Intro Text unter dem Logo ---------- */
+.intro {
+  text-align: center;
+  max-width: 640px;
+  margin: 1rem auto 3rem;
+  color: var(--text);
+  opacity: 0.95;
+}
+
+.intro__title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.3px;
+  color: #f2f5ff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+
+.intro__text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--muted);
+  opacity: 0.9;
+}
