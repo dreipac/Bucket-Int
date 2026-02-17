@@ -1,4 +1,6 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+const REACT_LOGIN_URL = "https://dreipac.github.io/straton-login/";
+
 
 const SUPABASE_URL = "https://fbzjlkwrlvcoqpgmvluw.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZiempsa3dybHZjb3FwZ212bHV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIzMzE2NDIsImV4cCI6MjA3NzkwNzY0Mn0.5hmwCz_i8JvZ0qvrh7OpOq2_CfaWgYQM6c1Czdzh3Bo";
@@ -8,34 +10,16 @@ window.sb = sb;
 
 /* ---------- Helpers ---------- */
 
-// Bin ich gerade auf der Login-Seite?
-function onLoginPage() {
-  return /\/login\/(login\.html)?$/i.test(location.pathname);
-}
-
-// Projektbasis ermitteln (Ordner, in dem index.html liegt)
-function projectBase() {
-  // entfernt /Chat/... /Bucket/... /login/... oder den Dateinamen am Ende
-  return location.pathname.replace(/\/(chat|bucket|login)\/.*|\/[^/]*$/i, "/");
-}
-
 // Login-URL absolut (bezogen auf Projektbasis) + next=...
 function buildLoginHref() {
-  if (onLoginPage()) return null; // ganz wichtig: kein Redirect von login.html
+  const here = location.pathname + location.search + location.hash;
 
-  const here = location.pathname + location.search + location.hash; // wohin es zurückgehen soll
-  const absLoginPath = projectBase() + "login/login.html";
-  const url = new URL(absLoginPath, location.origin);   // absolute URL
-  url.searchParams.set("next", here);                   // nur einmal anhängen
+  const url = new URL(REACT_LOGIN_URL);
+  url.searchParams.set("next", here); // wohin nach Login zurück
   return url.toString();
 }
 
-function resolvePostLoginTarget() {
-  const url = new URL(location.href);
-  const next = url.searchParams.get("next") || url.searchParams.get("returnTo");
-  // Fallback zur Projekt-Übersicht
-  return next || projectBase() + "index.html";
-}
+
 
 
 
@@ -59,13 +43,7 @@ sb.auth.onAuthStateChange((event, session) => {
     return;
   }
 
-  if (event === "SIGNED_IN" && onLoginPage()) {
-    location.href = resolvePostLoginTarget();
-  }
-});
 
 
-// Falls die Seite direkt mit bestehender Session auf login.html geladen wird → sofort weiter
-if (session?.user && onLoginPage()) {
-  location.href = resolvePostLoginTarget();
-}
+
+
